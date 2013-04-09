@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Apple Developer site fixes
 // @namespace    http://bronosky.com/
-// @version      0.1
+// @version      0.2
 // @description  Enables disabled field features and expands truncated content on Apple sites iOS developers frequent.
 // @include      http*://developer.apple.com/ios/*
 // These next 3 are only for the login form fix
@@ -57,6 +57,19 @@ if($("td.profile span")){setTimeout(function(){
 // Enable the Submit button on Provisioning > Distribution > Modify
 // We have to wait for Apple's JS that modifies the DOM after it loads.
 if($("input:radio[name='distributionMethod']")){setTimeout(function(){
-  $("input:radio[name='distributionMethod']").not(":checked").first().click();
-  $("input:radio[name='distributionMethod']").not(":checked").first().click();
+    $("input:radio[name='distributionMethod']").not(":checked").first().click();
+    $("input:radio[name='distributionMethod']").not(":checked").first().click();
+    $('input[name="provisioningProfileName"]').css({'width':'300px'})
 }, race_condition_timing);}
+
+// Display AppIDs on iTunesConnect > Manage Your Apps > See All
+$('div.software-column-type-col-0').not('a div').each(function(){
+    var e = this,
+      h = $('a', e).attr('href'),
+        f = $(e).find('p:first'),
+        p = $('<p>...</p>').insertAfter(f);
+	$.ajax(h).done(function(d){
+		appid = $($(d).find('.app-info-container label + span')[1]).text();
+		p.text(appid);
+	})
+})
